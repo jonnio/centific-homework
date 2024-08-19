@@ -9,8 +9,8 @@ logging.basicConfig(format="%(levelname)s:%(name)s:%(message)s", level=logging.D
 log = logging.getLogger(__name__)
 
 # Load the CSV files
-train_data_path = 'Consumer_Complaints_train.csv'
-test_data_path = 'Consumer_Complaints_test.csv'
+train_data_path = 'build/Consumer_Complaints_train.csv'
+test_data_path = 'build/Consumer_Complaints_test.csv'
 
 log.debug('loading files')
 # Read the data into DataFrames
@@ -21,7 +21,7 @@ test_df = pd.read_csv(test_data_path)
 train_df.head(), test_df.head()
 
 # Filter out rows where either "Consumer complaint narrative" or "Company response to consumer" is missing
-train_df_cleaned = train_df.dropna(subset=['Consumer complaint narrative', 'Company response to consumer'])
+train_df_cleaned = train_df.dropna(subset=['Consumer complaint narrative', 'Company response to consumer']).head(1000)
 # test_df_cleaned = test_df.dropna(subset=['Consumer complaint narrative', 'Company response to consumer'])
 
 # Display the number of rows remaining after cleaning
@@ -100,7 +100,7 @@ class CustomDataset(Dataset):
 
 # Create DataLoader
 train_dataset = CustomDataset(train_encodings, train_labels)
-train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, drop_last=True)
+train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, drop_last=True)
 
 # Initialize the model
 model = GPT2LMHeadModel.from_pretrained('gpt2')
@@ -113,7 +113,7 @@ log.debug(f'starting model training for {len(train_loader)} steps')
 
 # Training Loop
 model.train()
-for epoch in range(3):  # Adjust the number of epochs as needed
+for epoch in range(1):  # Adjust the number of epochs as needed
     log.debug(f'Training model epoch {epoch}')
     for step, batch in enumerate(train_loader):
         inputs, labels = batch['input_ids'], batch['labels']
