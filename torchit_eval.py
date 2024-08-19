@@ -11,8 +11,10 @@ log = logging.getLogger(__name__)
 
 log.debug('loading models')
 # Load the trained model and tokenizer
-model = GPT2LMHeadModel.from_pretrained('build/trained_model.pth')
-tokenizer = GPT2Tokenizer.from_pretrained('build/tokenizer.pth')
+model = GPT2LMHeadModel.from_pretrained('api/build/trained_model.pth')
+tokenizer = GPT2Tokenizer.from_pretrained('api/build/tokenizer.pth')
+tokenizer.pad_token = tokenizer.eos_token
+tokenizer.padding_side = 'left'
 
 # Set the model to evaluation mode
 model.eval()

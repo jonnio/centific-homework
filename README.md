@@ -18,3 +18,16 @@ pip install nemo_toolkit[all] torch transformers pytorch_lightning
 pip install nemo_toolkit[all] torch transformers pytorch_lightning
 
 ```
+
+
+```shell
+# BUILD
+docker build -t main .
+
+# docker run -it main sh
+
+docker run -it --rm --name my-running-app main
+
+# deploy the image to GCP
+gcloud run deploy snowflake-homework --port 8080 --source .
+```

@@ -30,7 +30,7 @@ app = FastAPI(title="Centific Homework - Osborn",
 
 model_path = os.environ.get('MODEL_PATH', 'build/trained_model.pth')
 token_path = os.environ.get('TOKEN_PATH', 'build/tokenizer.pth')
-log.debug(f'loading models {model_path}:{Path(model_path).resolve().exists()} and tokens {token_path}:{Path(token_path).resolve().exists()}')
+log.debug(f'loading models cwd:{Path(".").resolve()} {model_path}:{Path(model_path).resolve().exists()} and tokens {token_path}:{Path(token_path).resolve().exists()}')
 # Load the trained model and tokenizer
 model = GPT2LMHeadModel.from_pretrained(model_path)
 tokenizer = GPT2Tokenizer.from_pretrained(token_path)

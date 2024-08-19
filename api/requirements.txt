@@ -1,0 +1,6 @@
+uvicorn
+fastapi
+torch==2.2.2
+numpy==1.23.5
+torchtext
+transformers
