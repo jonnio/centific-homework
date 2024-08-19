@@ -21,7 +21,7 @@ test_df = pd.read_csv(test_data_path)
 train_df.head(), test_df.head()
 
 # Filter out rows where either "Consumer complaint narrative" or "Company response to consumer" is missing
-train_df_cleaned = train_df.dropna(subset=['Consumer complaint narrative', 'Company response to consumer']).head(1000)
+train_df_cleaned = train_df.dropna(subset=['Consumer complaint narrative', 'Company response to consumer']).head(10000)
 # test_df_cleaned = test_df.dropna(subset=['Consumer complaint narrative', 'Company response to consumer'])
 
 # Display the number of rows remaining after cleaning
@@ -43,14 +43,14 @@ log.debug('tokenizing train complaints')
 train_encodings = tokenizer(train_df_cleaned['Consumer complaint narrative'].tolist(),
                             padding="max_length",
                             truncation=True,
-                            max_length=128,
+                            max_length=512,
                             return_tensors="pt")
 
 # log.debug('tokenizing test complaints')
 # test_encodings = tokenizer(test_df_cleaned['Consumer complaint narrative'].tolist(),
 #                            padding=True,
 #                            truncation=True,
-#                            max_length=128,
+#                            max_length=512,
 #                            return_tensors="pt")
 
 log.debug('tokenizing train company response')
@@ -58,14 +58,14 @@ log.debug('tokenizing train company response')
 train_labels = tokenizer(train_df_cleaned['Company response to consumer'].tolist(),
                          padding="max_length",
                          truncation=True,
-                         max_length=128,
+                         max_length=512,
                          return_tensors="pt")
 
 # log.debug('tokenizing test company response')
 # test_labels = tokenizer(test_df_cleaned['Company response to consumer'].tolist(),
 #                         padding=True,
 #                         truncation=True,
-#                         max_length=128,
+#                         max_length=512,
 #                         return_tensors="pt")
 
 # Display a sample of tokenized data
@@ -100,7 +100,7 @@ class CustomDataset(Dataset):
 
 # Create DataLoader
 train_dataset = CustomDataset(train_encodings, train_labels)
-train_loader = DataLoader(train_dataset, batch_size=128, shuffle=True, drop_last=True)
+train_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, drop_last=True)
 
 # Initialize the model
 model = GPT2LMHeadModel.from_pretrained('gpt2')
