@@ -126,8 +126,8 @@ for epoch in range(1):  # Adjust the number of epochs as needed
 
 # Save the model
 log.debug('saving pretrained model')
-tokenizer.save_pretrained('tokenizer.pth')
-model.save_pretrained('trained_model.pth')
+tokenizer.save_pretrained('build/tokenizer.pth')
+model.save_pretrained('build/trained_model.pth')
 
 
 def build_model():
