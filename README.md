@@ -29,5 +29,6 @@ docker build -t main .
 docker run -it --rm --name my-running-app main
 
 # deploy the image to GCP
-gcloud run deploy snowflake-homework --port 8080 --source .
+gcloud config set project centifichomework
+gcloud run deploy centific-homework --port 8080 --source .
 ```

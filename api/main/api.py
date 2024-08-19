@@ -30,10 +30,16 @@ app = FastAPI(title="Centific Homework - Osborn",
 
 model_path = os.environ.get('MODEL_PATH', 'build/trained_model.pth')
 token_path = os.environ.get('TOKEN_PATH', 'build/tokenizer.pth')
-log.debug(f'loading models cwd:{Path(".").resolve()} {model_path}:{Path(model_path).resolve().exists()} and tokens {token_path}:{Path(token_path).resolve().exists()}')
+log.debug(
+    f'loading models cwd:{Path(".").resolve()} {model_path}:{Path(model_path).resolve().exists()} and tokens {token_path}:{Path(token_path).resolve().exists()}')
 # Load the trained model and tokenizer
 model = GPT2LMHeadModel.from_pretrained(model_path)
+model.eval()
+
 tokenizer = GPT2Tokenizer.from_pretrained(token_path)
+tokenizer.pad_token = tokenizer.eos_token
+tokenizer.padding_side = 'left'
+
 log.debug('models loaded')
 
 
@@ -47,5 +53,13 @@ async def root():
 @app.get('/response', tags=['LLM'], description="Retrieve a response")
 async def get_response(statement: str = None):
     if statement:
-        return {"response": statement}
-    pass
+        encoding = tokenizer([statement],
+                             padding="max_length",
+                             truncation=True,
+                             max_length=128,
+                             return_tensors="pt")
+
+        outputs = model.generate(input_ids=encoding['input_ids'], attention_mask=encoding['attention_mask'], max_length=150, num_beams=5, early_stopping=True)
+        log.debug('returning an actual response')
+        return {"response": tokenizer.decode(outputs[0], skip_special_tokens=True)}
+    return {"response": statement}
