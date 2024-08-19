@@ -43,14 +43,14 @@ log.debug('tokenizing train complaints')
 train_encodings = tokenizer(train_df_cleaned['Consumer complaint narrative'].tolist(),
                             padding="max_length",
                             truncation=True,
-                            max_length=512,
+                            max_length=128,
                             return_tensors="pt")
 
 # log.debug('tokenizing test complaints')
 # test_encodings = tokenizer(test_df_cleaned['Consumer complaint narrative'].tolist(),
 #                            padding=True,
 #                            truncation=True,
-#                            max_length=512,
+#                            max_length=128,
 #                            return_tensors="pt")
 
 log.debug('tokenizing train company response')
@@ -58,14 +58,14 @@ log.debug('tokenizing train company response')
 train_labels = tokenizer(train_df_cleaned['Company response to consumer'].tolist(),
                          padding="max_length",
                          truncation=True,
-                         max_length=512,
+                         max_length=128,
                          return_tensors="pt")
 
 # log.debug('tokenizing test company response')
 # test_labels = tokenizer(test_df_cleaned['Company response to consumer'].tolist(),
 #                         padding=True,
 #                         truncation=True,
-#                         max_length=512,
+#                         max_length=128,
 #                         return_tensors="pt")
 
 # Display a sample of tokenized data
@@ -118,7 +118,7 @@ for epoch in range(1):  # Adjust the number of epochs as needed
     for step, batch in enumerate(train_loader):
         inputs, labels = batch['input_ids'], batch['labels']
         optimizer.zero_grad()
-        outputs = model(input_ids=inputs, labels=labels)
+        outputs = model(input_ids=inputs, labels=labels, attention_mask=batch['attention_mask'])
         loss = outputs.loss
         loss.backward()
         optimizer.step()
