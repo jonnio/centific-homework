@@ -25,7 +25,7 @@ tokenizer = get_tokenizer(
 )
 
 # Load the new dataset
-file_path_large = 'Consumer_Complaints_train.csv'
+file_path_large = '../api/build/Consumer_Complaints_train.csv'
 df_large = pd.read_csv(file_path_large)
 
 # Display the first few rows to understand the structure
