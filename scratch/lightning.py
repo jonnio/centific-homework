@@ -134,3 +134,6 @@ model = ComplaintClassifier(num_classes=num_classes)
 print('setting up trainer')
 trainer = pl.Trainer(max_epochs=1)
 trainer.fit(model, train_loader, val_loader)
+
+model_save_path = 'complaint_classifier_model.pt'
+torch.save(model.state_dict(), model_save_path)
