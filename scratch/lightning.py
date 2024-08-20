@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load the CSV file
-file_path = '../api/build/Consumer_Complaints_train.csv'
+file_path = '../build/Consumer_Complaints_train.csv'
 df = pd.read_csv(file_path)
 
 # Display the first few rows
@@ -85,7 +85,7 @@ val_dataset = ConsumerComplaintsDataset(val_df, tokenizer)
 import multiprocessing
 
 cpu_count = multiprocessing.cpu_count()
-
+print(f'Using {cpu_count - 1} CPUs for data loading')
 # Create the DataLoaders
 train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, num_workers=cpu_count - 1)
 val_loader = DataLoader(val_dataset, batch_size=32, num_workers=cpu_count - 1)
