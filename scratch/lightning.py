@@ -73,7 +73,7 @@ class ComplaintClassifier(pl.LightningModule):
 
         outputs = self(input_ids, attention_mask)
         loss = torch.nn.functional.cross_entropy(outputs, labels)
-        self.log('train_loss', loss)
+        self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -123,7 +123,7 @@ def train():
         pickle.dump(label_encoder, pkl_file)
 
     # Step 6: Split the data into training and validation sets
-    train_df, val_df = train_test_split(df, test_size=0.5, random_state=42, stratify=df['Product'])
+    train_df, val_df = train_test_split(df, test_size=0.8, random_state=42, stratify=df['Product'])
 
     # Display the shapes of the resulting DataFrames
     print(train_df.shape, val_df.shape)
@@ -140,19 +140,21 @@ def train():
     cpu_count = multiprocessing.cpu_count()
     log.debug(f'Using {cpu_count - 1} CPUs for data loading')
     # Create the DataLoaders
-    train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True, num_workers=cpu_count - 1)
-    val_loader = DataLoader(val_dataset, batch_size=16, num_workers=cpu_count - 1)
+    train_loader = DataLoader(train_dataset, batch_size=8, shuffle=True, num_workers=cpu_count - 1)
+    val_loader = DataLoader(val_dataset, batch_size=8, num_workers=cpu_count - 1)
 
     num_classes = train_df['Product'].nunique()
     model = ComplaintClassifier(num_classes=num_classes)
+    log.debug(f'num_classes: {num_classes}')
 
     log.debug('setting up trainer')
     trainer = pl.Trainer(max_epochs=1)
     trainer.fit(model, train_loader, val_loader)
 
+    log.debug('training complete')
     model_save_path = '../build/complaint_classifier_model.pt'
     torch.save(model.state_dict(), model_save_path)
-
+    log.debug('torch save complete')
 
 @app.command()
 def infer(sample_text: str):
